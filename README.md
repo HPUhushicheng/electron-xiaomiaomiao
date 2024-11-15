@@ -6,8 +6,8 @@ pnpm run dev
 pnpm add electron -D    // 添加electron依赖,这一步经常出错，终归问题是网络问题
 pnpm add concurrently
 
-
-
+pnpm add -D sass-embedded
+pnpm add element-plus
 
 
 
