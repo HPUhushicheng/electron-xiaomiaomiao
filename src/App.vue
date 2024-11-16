@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import LoginRegister from './components/LoginRegister.vue'
+import Login from './components/Login.vue'
+import Register from './components/Register.vue'
+import TodayTime from './components/TodayTime.vue'
+import WeekTime from './components/WeekTime.vue'
 </script>
 
 <template>
-  <LoginRegister />
+  <TodayTime />
 </template>
 
 <style scoped>
