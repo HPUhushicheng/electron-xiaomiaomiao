@@ -56,6 +56,28 @@ const typeWriter = (text, delay) => {
 onMounted(() => {
     typeWriter(fullDesc, 400); // 调用打字机效果，设置每个字符的延迟
 });
+
+const login = () => {
+  // 假设这里是你的登录逻辑
+  const isLoginSuccessful = true; // 这里应该是实际的登录验证逻辑
+
+  if (isLoginSuccessful) {
+    // 登录成功后启动计时器
+    setInterval(() => {
+      fetch('/api/time/record', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: '用户ID', // 替换为实际的用户ID
+          date: new Date().toISOString().split('T')[0],
+          hourtime: 1,
+        }),
+      });
+    }, 1000 * 60 * 60); // 每小时发送一次
+  }
+};
 </script>
 
 <style scoped>

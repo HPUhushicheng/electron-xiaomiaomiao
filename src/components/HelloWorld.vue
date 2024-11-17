@@ -1,41 +1,217 @@
-<script setup lang="ts">
-import { ref } from 'vue'
+<script>
+import { ref } from 'vue';
 
-defineProps<{ msg: string }>()
+const formData = ref({
+  name: '',
+  major: '',
+  studentid: '',
+  tel: '',
+  password: '',         
+  qq: ''
+});
 
-const count = ref(0)
+const register = async () => {
+  try {
+    const response = await fetch('http://localhost:666/api/list/add', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData.value)
+    });
+
+    const result = await response.json();
+    if (result.status === 200) {
+      alert('注册成功');
+    } else {
+      alert('注册失败');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('注册时发生错误');
+  }
+};
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
+<div id="form-ui">
+  <form @submit.prevent="register" id="form">
+    <div id="form-body">
+      <div id="welcome-lines">
+        <div id="welcome-line-1"><img src="../assets/001.png" alt="" width="70px" height="70px"></div>
+        <div id="welcome-line-2"></div>
+      </div>
+      <div id="input-area">
+        <div class="form-inp">
+            <input v-model="formData.name" placeholder="姓名" type="text">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.major" placeholder="专业" type="text">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.studentid" placeholder="学号" type="text">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.tel" placeholder="电话" type="tel">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.password" placeholder="密码" type="password">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.qq" placeholder="QQ" type="text">
+        </div>
+      </div>
 
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
-  </div>
+      <div id="submit-button-cvr">
+        <button id="submit-button" type="submit">注册</button>
+      </div>
+    </div>
+  </form>
+</div>
 
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Learn more about IDE Support for Vue in the
-    <a
-      href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support"
-      target="_blank"
-      >Vue Docs Scaling up Guide</a
-    >.
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+/* From Uiverse.io by AnthonyPreite */ 
+#form {
+  display: grid;
+  place-items: center;
+  width: 300px;
+  height: 420px;
+  padding: 25px;
+  background-image: linear-gradient(to right,#ffffff, #ffffff,#ffffff);
+  box-shadow: 0px 15px 60px #00FF7F;
+  outline: 1px solid #2b9962;
+  border-radius: 10px;
+}
+
+#form-body {
+  position: absolute;
+  top: 40%;
+  right: 25px;
+  left: 25px;
+  width: 230px;
+  margin: -156px auto 0 auto;
+}
+
+#welcome-lines {
+  text-align: center;
+  line-height: 1;
+}
+
+#welcome-line-1 {
+  color: #00FF7F;
+  font-weight: 600;
+  font-size: 40px;
+}
+
+#welcome-line-2 {
+  color: #ffffff;
+  font-size: 18px;
+  margin-top: 17px;
+}
+
+#input-area {
+  margin-top: 30px;
+}
+
+.form-inp {
+  padding: 11px 25px;
+  background: transparent;
+  border: 1px solid #e3e3e3;
+  line-height: 1;
+  border-radius: 8px;
+  margin-bottom: 10px; /* 添加间隔 */
+}
+
+.form-inp:focus {
+  border: 1px solid #d3c23f;
+}
+
+.form-inp:first-child {
+  margin-bottom: 15px;
+}
+
+.form-inp input {
+  width: 100%;
+  background: none;
+  font-size: 13.4px;
+  color: #00140a;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-inp input:focus {
+  outline: none;
+}
+
+#submit-button-cvr {
+  margin-top: 20px;
+}
+
+#submit-button {
+  display: block;
+  width: 100%;
+  color: #00FF7F;
+  background-color: transparent;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+  padding: 14px 13px 12px 13px;
+  border: 0;
+  outline: 1px solid #00FF7F;
+  border-radius: 8px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all ease-in-out .3s;
+}
+
+#submit-button:hover {
+  transition: all ease-in-out .3s;
+  background-color: #00FF7F;
+  color: #161616;
+  cursor: pointer;
+}
+
+#forgot-pass {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#forgot-pass a {
+  color: #868686;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+#bar {
+  position: absolute;
+  left: 50%;
+  bottom: -50px;
+  width: 28px;
+  height: 8px;
+  margin-left: -33px;
+  background-color: #00FF7F;
+  border-radius: 10px;
+}
+
+#bar:before,
+#bar:after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #ececec;
+  border-radius: 50%;
+}
+
+#bar:before {
+  right: -20px;
+}
+
+#bar:after {
+  right: -38px;
 }
 </style>

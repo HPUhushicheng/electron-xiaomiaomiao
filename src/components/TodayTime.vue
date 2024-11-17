@@ -12,6 +12,7 @@ import { ref, onMounted } from 'vue';
 import * as echarts from 'echarts';
 
 const chartRef = ref(null);
+const onlineTimeData = ref([]);
 
 onMounted(() => {
   const chart = echarts.init(chartRef.value);
@@ -31,12 +32,21 @@ onMounted(() => {
       {
         name: '工作时长',
         type: 'line',
-        data: Array.from({ length: 2000 }, () => Math.floor(Math.random() * 60)), // 示例数据
+        data: onlineTimeData.value,
       },
     ],
   };
 
   chart.setOption(option);
+
+  const eventSource = new EventSource('/api/stream');
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    onlineTimeData.value.push(data.time);
+    chart.setOption({
+      series: [{ data: onlineTimeData.value }],
+    });
+  };
 });
 </script>
 

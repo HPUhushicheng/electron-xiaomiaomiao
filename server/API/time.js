@@ -86,4 +86,16 @@ exports.update = (req, res) => {        //通过id更新数据
     })
 }
 
+//记录在线时长
+exports.recordTime = (req, res) => {
+    const { id, date, hourtime } = req.body;
+    const sql = 'insert into time (id, date, hourtime) values (?, ?, ?) on duplicate key update hourtime = hourtime + ?';
+    db.query(sql, [id, date, hourtime, hourtime], (err, data) => {
+        if (err) {
+            return res.send('错误：' + err.message);
+        }
+        res.send({ status: 200, message: '时间记录成功' });
+    });
+}
+
 

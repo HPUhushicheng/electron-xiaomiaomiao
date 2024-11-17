@@ -1,99 +1,217 @@
-<script setup lang="ts">
+<script>
+import { ref } from 'vue';
+
+const formData = ref({
+  name: '',
+  major: '',
+  studentid: '',
+  tel: '',
+  password: '',         
+  qq: ''
+});
+
+const register = async () => {
+  try {
+    const response = await fetch('http://localhost:666/api/list/add', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData.value)
+    });
+
+    const result = await response.json();
+    if (result.status === 200) {
+      alert('注册成功');
+    } else {
+      alert('注册失败');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('注册时发生错误');
+  }
+};
 </script>
 
 <template>
-  <div>
-    <el-row :gutter="24" class="dashboard-row">
-      <el-col :span="12">
-        <el-card class="dashboard-card1">今天的工作时长细则
-          <div ref="chartRef" style="height: 300px;">
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card class="dashboard-card2">今日课程
-        </el-card>
-      </el-col>
-    </el-row>
+<div id="form-ui">
+  <form @submit.prevent="register" id="form">
+    <div id="form-body">
+      <div id="welcome-lines">
+        <div id="welcome-line-1"><img src="../assets/001.png" alt="" width="70px" height="70px"></div>
+        <div id="welcome-line-2"></div>
+      </div>
+      <div id="input-area">
+        <div class="form-inp">
+            <input v-model="formData.name" placeholder="姓名" type="text">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.major" placeholder="专业" type="text">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.studentid" placeholder="学号" type="text">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.tel" placeholder="电话" type="tel">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.password" placeholder="密码" type="password">
+        </div>
+        <div class="form-inp">
+            <input v-model="formData.qq" placeholder="QQ" type="text">
+        </div>
+      </div>
 
-    <!-- 第四行 -->
-    <el-row :gutter="24" class="dashboard-row">
-      <el-col :span="12">
-        <el-card class="dashboard-card3">一周工作时间折线图
-        
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card class="dashboard-card4">更新动态</el-card>
-      </el-col>
-    </el-row>
+      <div id="submit-button-cvr">
+        <button id="submit-button" type="submit">注册</button>
+      </div>
+    </div>
+  </form>
+</div>
 
-  </div>
+
 </template>
 
 <style scoped>
-
-.dashboard-row + .dashboard-row {
-  margin-top: 20px; /* 设置行间距 */
+/* From Uiverse.io by AnthonyPreite */ 
+#form {
+  display: grid;
+  place-items: center;
+  width: 300px;
+  height: 420px;
+  padding: 25px;
+  background-image: linear-gradient(to right,#ffffff, #ffffff,#ffffff);
+  box-shadow: 0px 15px 60px #00FF7F;
+  outline: 1px solid #2b9962;
+  border-radius: 10px;
 }
 
-.dashboard-card1 {
-  width:300px;
-  height: 200px; /* 设置个别板块的高度 */
-  border-radius: 10px; /* 设置圆角效果 */
-  background-image: url('../assets/001.png'); /* 添加图片背景 */
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.3s ease-in-out; /* 平滑过渡效果 */
+#form-body {
+  position: absolute;
+  top: 40%;
+  right: 25px;
+  left: 25px;
+  width: 230px;
+  margin: -156px auto 0 auto;
 }
-.dashboard-card1:hover{
-  transform: scale(0.9); /* 放大图片 */
-  cursor: pointer; /* 鼠标悬停时显示指针 */
+
+#welcome-lines {
+  text-align: center;
+  line-height: 1;
 }
-.dashboard-card2 {
-  width:300px;
-  height: 200px; /* 设置个别板块的高度 */
-  border-radius: 10px; /* 设置圆角效果 */
-  background-image: url('../assets/002.png'); /* 添加图片背景 */
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.3s ease-in-out; /* 平滑过渡效果 */
+
+#welcome-line-1 {
+  color: #00FF7F;
+  font-weight: 600;
+  font-size: 40px;
 }
-.dashboard-card2:hover{
-  transform: scale(0.9); /* 放大图片 */
-  cursor: pointer; /* 鼠标悬停时显示指针 */
+
+#welcome-line-2 {
+  color: #ffffff;
+  font-size: 18px;
+  margin-top: 17px;
 }
-.dashboard-card3 {
-  width:300px;
-  height: 200px; /* 设置个别板块的高度 */
-  border-radius: 10px; /* 设置圆角效果 */
-  background-image: url('../assets/003.png'); /* 添加图片背景 */
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.3s ease-in-out; /* 平滑过渡效果 */
+
+#input-area {
+  margin-top: 30px;
 }
-.dashboard-card3:hover{
-  transform: scale(0.9); /* 放大图片 */
-  cursor: pointer; /* 鼠标悬停时显示指针 */
+
+.form-inp {
+  padding: 11px 25px;
+  background: transparent;
+  border: 1px solid #e3e3e3;
+  line-height: 1;
+  border-radius: 8px;
+  margin-bottom: 10px; /* 添加间隔 */
 }
-.dashboard-card4 {
-  width:300px;
-  height: 200px; /* 设置个别板块的高度 */
-  border-radius: 10px; /* 设置圆角效果 */
-  background-image: url('../assets/004.png'); /* 添加图片背景 */
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.3s ease-in-out; /* 平滑过渡效果 */
+
+.form-inp:focus {
+  border: 1px solid #d3c23f;
 }
-.dashboard-card4:hover{
-  transform: scale(0.9); /* 放大图片 */
-  cursor: pointer; /* 鼠标悬停时显示指针 */
+
+.form-inp:first-child {
+  margin-bottom: 15px;
+}
+
+.form-inp input {
+  width: 100%;
+  background: none;
+  font-size: 13.4px;
+  color: #00140a;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-inp input:focus {
+  outline: none;
+}
+
+#submit-button-cvr {
+  margin-top: 20px;
+}
+
+#submit-button {
+  display: block;
+  width: 100%;
+  color: #00FF7F;
+  background-color: transparent;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+  padding: 14px 13px 12px 13px;
+  border: 0;
+  outline: 1px solid #00FF7F;
+  border-radius: 8px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all ease-in-out .3s;
+}
+
+#submit-button:hover {
+  transition: all ease-in-out .3s;
+  background-color: #00FF7F;
+  color: #161616;
+  cursor: pointer;
+}
+
+#forgot-pass {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#forgot-pass a {
+  color: #868686;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+#bar {
+  position: absolute;
+  left: 50%;
+  bottom: -50px;
+  width: 28px;
+  height: 8px;
+  margin-left: -33px;
+  background-color: #00FF7F;
+  border-radius: 10px;
+}
+
+#bar:before,
+#bar:after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #ececec;
+  border-radius: 50%;
+}
+
+#bar:before {
+  right: -20px;
+}
+
+#bar:after {
+  right: -38px;
 }
 </style>
-
-
-<!-- 
- 绿色渐变色背景 background-image: linear-gradient(to right, #a6e2b9 0%, #eceab7 100%);
- 蓝色渐变色背景 background-image: linear-gradient(to right,#EBEAFF, #B6D4FF,#CAEFF6);
- 
- -->
