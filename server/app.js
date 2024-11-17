@@ -4,7 +4,7 @@
 // let bodyParser = require('body-parser')
 // let router = require('./router')
 
-let express = require('express'); 
+let express = require('express');
 let bodyParser = require('body-parser');
 let cors = require('cors');
 let router = require('./router');
@@ -12,7 +12,7 @@ let app = express();
 
 
 app.use(bodyParser.json());  //配置解析，用于解析json和urlencoded格式的数据
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors())              //配置跨域
 app.use(router)              //配置路由
 

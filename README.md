@@ -8,7 +8,7 @@ pnpm add concurrently
 
 pnpm add -D sass-embedded
 pnpm add element-plus
-
+pnpm add echarts
 
 
 解决electron安装失败问题

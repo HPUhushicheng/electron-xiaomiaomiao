@@ -44,7 +44,7 @@ exports.add = (req, res) => {        //向time表添加数据
             res.send({
                 status: 200,
                 message: 'success',
-                 data: {
+                data: {
                     id: req.query.id,
                     date: req.query.date,
                     daytime: req.query.daytime,

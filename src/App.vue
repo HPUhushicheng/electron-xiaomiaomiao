@@ -7,6 +7,7 @@ import WeekTime from './components/WeekTime.vue'
 
 <template>
   <TodayTime />
+  <WeekTime />
 </template>
 
 <style scoped>
