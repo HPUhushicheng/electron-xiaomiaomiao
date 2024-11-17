@@ -42,9 +42,17 @@ exports.del = (req, res) => {        //通过id删除数据
     })
 }
 
-exports.add = (req, res) => {        //向info表添加数据
+exports.add = (req, res) => {        //向info表添加数据，这里使用studentid作为id，这里发现虽然做了not null处理，但是还是会出现某些字段为空的情况下还是注册，加入非空校验
+    const { studentid, name, password, major, tel, qq } = req.query;
+    // 检查必需的参数是否存在且不为空
+    if (!studentid || !name || !password || !major || !tel || !qq) {
+        return res.send({
+            status: 400,
+            message: '缺少必需的参数'
+        });
+    }
     var sql = 'insert into info (id,name,password,studentid,major,tel,qq) values (?,?,?,?,?,?,?)'
-    db.query(sql, [req.query.id, req.query.name,req.query.password, req.query.studentid, req.query.major,req.query.tel,req.query.qq], (err, data) => {
+    db.query(sql, [req.query.studentid, req.query.name, req.query.password, req.query.studentid, req.query.major, req.query.tel, req.query.qq], (err, data) => {
         if(err) {
             return res.send('错误：' + err.message)
         }
@@ -53,7 +61,7 @@ exports.add = (req, res) => {        //向info表添加数据
               status: 200,
                 message: 'success',
               data: {
-                id: req.query.id,
+                id: req.query.studentid,
                 name: req.query.name,
                 password: req.query.password,
                 studentid: req.query.studentid,

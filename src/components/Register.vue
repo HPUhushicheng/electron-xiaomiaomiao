@@ -1,44 +1,57 @@
 <script>
 import { ref } from 'vue';
 
-const formData = ref({
-  name: '',
-  major: '',
-  studentid: '',
-  tel: '',
-  password: '',         
-  qq: ''
-});
-
-const register = async () => {
-  try {
-    const response = await fetch('http://localhost:666/api/list/add', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData.value)
+export default {
+  setup() {
+    const formData = ref({
+      id: '',
+      name: '',
+      major: '',
+      studentid: '',
+      tel: '',
+      password: '',
+      qq: ''
     });
 
-    const result = await response.json();
-    if (result.status === 200) {
-      alert('注册成功');
-    } else {
-      alert('注册失败');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('注册时发生错误');
+    const register = async () => {
+      try {
+        //将studentid赋值给id
+        formData.value.id = formData.value.studentid
+        console.log('Submitting form data:', formData.value);
+        const queryString = new URLSearchParams(formData.value).toString();
+        const response = await fetch(`http://localhost:666/list/add?${queryString}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = await response.json();
+        if (result.status === 200) {
+          alert('电开人,欢迎你注册成功');
+        } else {
+          alert('很遗憾,你注册失败了,请检查信息是否全部填写,或者是联系网络组!');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('注册时发生错误');
+      }
+    };
+
+    return {
+      formData,
+      register
+    };
   }
 };
 </script>
 
 <template>
 <div id="form-ui">
-  <form @submit.prevent="register" id="form">
+  <form id="form" @submit.prevent="register">
     <div id="form-body">
       <div id="welcome-lines">
-        <div id="welcome-line-1"><img src="../assets/001.png" alt="" width="70px" height="70px"></div>
+        
         <div id="welcome-line-2"></div>
       </div>
       <div id="input-area">
