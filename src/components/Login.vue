@@ -1,15 +1,15 @@
-<template>
+ <template>
     <div class="fullscreen">
         <div class="container">
             <div class="first">
                 <div class="title">{{displayedDesc}}</div>
-                <div class="desc">关于<span @click="aboutWaiFChat">电器开发部</span></div>
+                <div class="desc">关于<span >电器开发部</span></div>
             </div>
             <div class="second">
-                <input placeholder="请输入你的手机号" pattern="\d+" class="tel" name="tel" type="tel">
-                <input placeholder="请输入你的密码" pattern="\d+" class="passwd" name="passwd" type="passwd">
+                <input v-model="studentid" placeholder="请输入你的学号" pattern="\d+" class="studentid" name="studentid" type="text">
+                <input v-model="password" placeholder="请输入你的密码" pattern="\d+" class="password" name="password" type="password">
 
-                <button>
+                <button @click="login">
                     <div class="svg-wrapper-1">
                         <div class="svg-wrapper">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -24,14 +24,19 @@
                 </button>
                 <p>还没有账号？<a href="#" @click.prevent="register">去注册</a></p>
             </div>
-
         </div>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { defineEmits } from 'vue';
 
+const router = useRouter();
+const studentid = ref('');
+const password = ref('');
+const emit = defineEmits(['login-success']); // 定义 emit
 const displayedDesc = ref(''); // 用于显示的文本
 const fullDesc = '电器开发部'; // 完整的描述文本
 
@@ -57,25 +62,25 @@ onMounted(() => {
     typeWriter(fullDesc, 400); // 调用打字机效果，设置每个字符的延迟
 });
 
-const login = () => {
-  // 假设这里是你的登录逻辑
-  const isLoginSuccessful = true; // 这里应该是实际的登录验证逻辑
+const login = async () => {
+  try {
+    const response = await fetch('http://localhost:666/list/all');
+    const users = await response.json();
 
-  if (isLoginSuccessful) {
-    // 登录成功后启动计时器
-    setInterval(() => {
-      fetch('/api/time/record', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: '用户ID', // 替换为实际的用户ID
-          date: new Date().toISOString().split('T')[0],
-          hourtime: 1,
-        }),
-      });
-    }, 1000 * 60 * 60); // 每小时发送一次
+    const user = users.find(user => user.studentid === studentid.value && user.password === password.value);
+
+    if (user) {
+      // 登录成功，触发事件
+      emit('login-success');
+    } else {
+      alert('学号或密码错误');
+      studentid.value = ''; // 清空学号输入框
+      password.value = ''; // 清空密码输入框
+    }
+  } catch (error) {
+    console.error('登录失败,请联系管理员:', error);
+    studentid.value = ''; // 清空学号输入框
+    password.value = ''; // 清空密码输入框
   }
 };
 </script>
@@ -223,7 +228,7 @@ button:active {
 
 
 /* From Uiverse.io by Creatlydev */
-.tel {
+.studentid {
     width: 220px;
     padding: 12px;
     border: none;
@@ -235,12 +240,12 @@ button:active {
     /* 增加底部外边距来调整距离 */
 }
 
-.tel:invalid {
+.studentid:invalid {
     animation: justshake 0.3s forwards;
     color: rgb(89, 102, 80);
 }
 
-.passwd {
+.password {
     width: 220px;
     padding: 12px;
     border: none;
@@ -251,7 +256,7 @@ button:active {
     margin-bottom: 30px;
 }
 
-.passwd:invalid {
+.password:invalid {
     animation: justshake 0.3s forwards;
     color: rgb(89, 102, 80);
 }
@@ -269,16 +274,20 @@ button:active {
         transform: rotate(5deg);
     }
 }
-</style> 
 
+input {
+  outline: none; /* 确保没有样式影响输入框 */
+  border: 1px solid #ccc; /* 默认边框样式 */
+  padding: 8px; /* 内边距 */
+  border-radius: 4px; /* 圆角 */
+  margin-bottom: 10px; /* 底部外边距 */
+}
 
-
-
-
-
-
-
-
+input:focus {
+  border-color: #66afe9; /* 聚焦时的边框颜色 */
+  box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); /* 聚焦时的阴影效果 */
+}
+</style>  
 
 
 
