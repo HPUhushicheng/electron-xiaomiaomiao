@@ -32,12 +32,12 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineEmits } from 'vue';
+import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
 
 const router = useRouter();
 const studentid = ref('');
 const password = ref('');
-const onlineDuration = ref(0); // 在线时长（秒）
-let timer: ReturnType<typeof setInterval> | null = null; // 定义计时器
+const onlineDurationStore = useOnlineDurationStore();
 const emit = defineEmits(['login-success']); // 定义 emit
 const displayedDesc = ref(''); // 用于显示的文本
 const fullDesc = '电器开发部'; // 完整的描述文本
@@ -62,7 +62,6 @@ const typeWriter = (text, delay) => {
 
 onMounted(() => {
     typeWriter(fullDesc, 400); // 调用打字机效果，设置每个字符的延迟
-    scheduleDurationSend();
 });
 
 const login = async () => {
@@ -82,8 +81,8 @@ const login = async () => {
     if (user) {
       console.log('登录成功');
       emit('login-success'); // 触发事件
-      router.push('/zy'); // 使用 router 进行跳转
-      startTimer(); // 开始计时
+      onlineDurationStore.startTimer();
+        router.push('/zy'); // 延迟跳转
     } else {
       alert('学号或密码错误');
       studentid.value = ''; // 清空学号输入框
@@ -95,46 +94,6 @@ const login = async () => {
     password.value = ''; // 清空密码输入框
   }
 };
-
-// 开始计时
-const startTimer = () => {
-  timer = setInterval(() => {
-    onlineDuration.value += 1; // 每秒增加在线时长
-  }, 1000);
-};
-
-// 每小时发送一次在线时长
-const sendOnlineDuration = async () => {
-  const currentDate = new Date();
-  const date = currentDate.toISOString().split('T')[0]; // 获取当前日期
-  const daytime = currentDate.getHours(); // 获取当前小时
-  const hourtime = onlineDuration.value; // 获取在线时长（秒）
-
-  const url = `http://localhost:666/api/time/add?id=${studentid.value}&date=${date}&daytime=${daytime}&hourtime=${hourtime}`;
-
-  try {
-    const response = await fetch(url);
-    const result = await response.json();
-    console.log(result);
-  } catch (error) {
-    console.error('发送在线时长失败:', error);
-  }
-};
-
-// 每小时发送一次在线时长
-const scheduleDurationSend = () => {
-  setInterval(() => {
-    sendOnlineDuration();
-    onlineDuration.value = 0; // 重置在线时长
-  }, 3600000); // 每小时发送一次
-};
-
-// 组件卸载时清理计时器
-onBeforeUnmount(() => {
-  if (timer) {
-    clearInterval(timer);
-  }
-});
 </script>
 
 <style scoped>
