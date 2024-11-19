@@ -1,17 +1,27 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+
+function todaytime(){
+    router.push({path:'/todaytime'})
+};
+function weektime(){
+  router.push({path:'/weektime'})
+}
 </script>
 
 <template>
   <div>
     <el-row :gutter="24" class="dashboard-row">
       <el-col :span="12">
-        <el-card class="dashboard-card1">今天的工作时长细则
+        <el-card class="dashboard-card1" @click="todaytime">今天的工作时长细则
           <div ref="chartRef" style="height: 300px;">
           </div>
         </el-card>
       </el-col>
       <el-col :span="12">
-        <el-card class="dashboard-card2">今日课程
+        <el-card class="dashboard-card2" @click="todaycourse">今日课程
         </el-card>
       </el-col>
     </el-row>
@@ -19,12 +29,12 @@
     <!-- 第四行 -->
     <el-row :gutter="24" class="dashboard-row">
       <el-col :span="12">
-        <el-card class="dashboard-card3">一周工作时间折线图
+        <el-card class="dashboard-card3" @click="weektime">一周工作时间折线图
         
         </el-card>
       </el-col>
       <el-col :span="12">
-        <el-card class="dashboard-card4">更新动态</el-card>
+        <el-card class="dashboard-card4" @click="gengxin">更新动态</el-card>
       </el-col>
     </el-row>
 
