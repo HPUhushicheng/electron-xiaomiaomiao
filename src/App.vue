@@ -2,21 +2,28 @@
   <router-view />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue';
 import { useOnlineDurationStore } from './stores/useOnlineDurationStore';
 
 const onlineDurationStore = useOnlineDurationStore();
 
 onMounted(() => {
-  onlineDurationStore.startTimer();
+  const savedStudentId = localStorage.getItem('studentId');
+  if (savedStudentId) {
+    onlineDurationStore.setStudentId(savedStudentId);
+    onlineDurationStore.startTimer();
+  }
 });
+
+const stopTimerOnExit = () => {
+  console.log('应用卸载，停止计时器');
+  onlineDurationStore.stopTimer();
+};
 
 onBeforeUnmount(() => {
-  onlineDurationStore.stopTimer();
+  stopTimerOnExit();
 });
-</script>
 
-<style scoped>
-/* 这里可以添加全局样式 */
-</style>
+window.addEventListener('beforeunload', stopTimerOnExit);
+</script>

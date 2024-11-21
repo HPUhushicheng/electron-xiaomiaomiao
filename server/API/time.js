@@ -60,30 +60,31 @@ exports.add = (req, res) => {        //向time表添加数据
         }
     })
 }
-exports.update = (req, res) => {        //通过id更新数据
-    var sql = 'update time set date = ?, daytime = ?, hourtime = ?where id = ?'
-    db.query(sql, [req.query.date, req.query.daytime, req.query.hourtime, req.query.id], (err, data) => {
+exports.update = (req, res) => {        //通过id、date和daytime更新数据
+    const { id, date, daytime, hourtime } = req.body;
+    var sql = 'UPDATE time SET hourtime = ? WHERE id = ? AND date = ? AND daytime = ?';
+    db.query(sql, [hourtime, id, date, daytime], (err, data) => {
         if (err) {
-            return res.send('错误：' + err.message)
+            return res.send('错误：' + err.message);
         }
         if (data.changedRows > 0) {
             res.send({
                 status: 200,
                 message: 'success',
                 data: {
-                    id: req.query.id,
-                    date: req.query.date,
-                    daytime: req.query.daytime,
-                    hourtime: req.query.hourtime
+                    id: id,
+                    date: date,
+                    daytime: daytime,
+                    hourtime: hourtime
                 }
-            })
+            });
         } else {
             res.send({
                 status: 202,
                 message: 'error'
-            })
+            });
         }
-    })
+    });
 }
 
 //记录在线时长

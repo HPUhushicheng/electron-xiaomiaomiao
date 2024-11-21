@@ -29,18 +29,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted  } from 'vue';
 import { useRouter } from 'vue-router';
 import { defineEmits } from 'vue';
 import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
+import { useUserStore } from '../stores/useUserStore';
 
 const router = useRouter();
 const studentid = ref('');
 const password = ref('');
 const onlineDurationStore = useOnlineDurationStore();
-const emit = defineEmits(['login-success']); // 定义 emit
-const displayedDesc = ref(''); // 用于显示的文本
-const fullDesc = '电器开发部'; // 完整的描述文本
+const emit = defineEmits(['login-success']);
+const displayedDesc = ref('');
+const fullDesc = '电器开发部';
+const userStore = useUserStore();
 
 // 打字机效果函数
 const typeWriter = (text, delay) => {
@@ -49,7 +51,7 @@ const typeWriter = (text, delay) => {
 
     const type = () => {
         if (index < text.length) {
-            displayedDesc.value += text.charAt(index); // 添加下一个字符
+            displayedDesc.value += text.charAt(index); // 添加下一个字
             index++;
             setTimeout(type, delay); // 设置延迟
         } else {
@@ -79,19 +81,25 @@ const login = async () => {
     );
 
     if (user) {
-      console.log('登录成功');
-      emit('login-success'); // 触发事件
-      onlineDurationStore.startTimer();
-        router.push('/zy'); // 延迟跳转
+      console.log('登录成功, 用户:', user);
+
+      // 设置全局的 studentId
+      onlineDurationStore.setStudentId(user.studentid);
+
+      // 保存 studentId 到本地存储
+      localStorage.setItem('studentId', user.studentid);
+
+      onlineDurationStore.startTimer(); // 开始计时器
+      router.push('/zy'); // 跳转页面
     } else {
       alert('学号或密码错误');
-      studentid.value = ''; // 清空学号输入框
-      password.value = ''; // 清空密码输入框
+      studentid.value = '';
+      password.value = '';
     }
   } catch (error) {
     console.error('登录失败,请联系管理员:', error);
-    studentid.value = ''; // 清空学号输入框
-    password.value = ''; // 清空密码输入框
+    studentid.value = '';
+    password.value = '';
   }
 };
 </script>
@@ -288,8 +296,8 @@ button:active {
 
 input {
   outline: none; /* 确保没有样式影响输入框 */
-  border: 1px solid #ccc; /* 默认边框样式 */
-  padding: 8px; /* 内边距 */
+  border: 1px solid #ccc; /* 默认边框式 */
+  padding: 8px; /* ���边距 */
   border-radius: 4px; /* 圆角 */
   margin-bottom: 10px; /* 底部外边距 */
 }
