@@ -8,15 +8,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import * as echarts from 'echarts';
+import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
+
+const store = useOnlineDurationStore();
+
+// 获取今天的日期
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const date = `${year}-${month}-${day}`;
 
 const chartRef = ref(null);
-const studentid = 1; // 假设这是当前用户的 studentid
-const date = '2024-10-06'; // 假设这是要查询的日期
 
-const fetchOnlineDuration = async () => {
-  const url = `http://localhost:666/api/time/get?id=${studentid}&date=${date}`;
+const fetchOnlineDuration = async (id: string) => {
+  const url = `http://localhost:666/api/time/get?id=${id}&date=${date}`;
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -27,9 +35,9 @@ const fetchOnlineDuration = async () => {
   }
 };
 
-const renderChart = (data) => {
+const renderChart = (data: Array<{ daytime: number; hourtime: number }>) => {
   const daytime = data.map(item => item.daytime);
-  const hourtime = data.map(item => item.hourtime);
+  const hourtimeInMinutes = data.map(item => item.hourtime / 60); // 将秒转换为分钟
 
   const chart = echarts.init(chartRef.value);
   const option = {
@@ -42,13 +50,13 @@ const renderChart = (data) => {
     },
     yAxis: {
       type: 'value',
-      name: '在线时长（秒）',
+      name: '在线时长（分钟）',
     },
     series: [
       {
         name: '在线时长',
         type: 'line',
-        data: hourtime,
+        data: hourtimeInMinutes,
       },
     ],
   };
@@ -56,10 +64,24 @@ const renderChart = (data) => {
   chart.setOption(option);
 };
 
-onMounted(async () => {
-  const onlineDurationData = await fetchOnlineDuration();
+const updateChart = async () => {
+  const onlineDurationData = await fetchOnlineDuration(store.studentId);
   renderChart(onlineDurationData);
+};
+
+onMounted(() => {
+  updateChart();
 });
+
+// 监听 store 中 studentId 的变化
+watch(
+  () => store.studentId,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      await updateChart();
+    }
+  }
+);
 </script>
 
 <style scoped>

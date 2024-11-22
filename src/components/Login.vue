@@ -34,7 +34,10 @@ import { useRouter } from 'vue-router';
 import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
 import { useUserStore } from '../stores/useUserStore';
 
+const store = useOnlineDurationStore();
 const router = useRouter();
+const id = ref('');
+const name = ref('');
 const studentid = ref('');
 const password = ref('');
 const onlineDurationStore = useOnlineDurationStore();

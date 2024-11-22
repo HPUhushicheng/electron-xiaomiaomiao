@@ -6,11 +6,11 @@
 import { onMounted, onBeforeUnmount } from 'vue';
 import { useOnlineDurationStore } from './stores/useOnlineDurationStore';
 
-const onlineDurationStore = useOnlineDurationStore();
+const store = useOnlineDurationStore();
 
 const stopTimerOnExit = () => {
   console.log('应用卸载，停止计时器');
-  onlineDurationStore.stopTimer();
+  store.stopTimer();
 };
 
 onBeforeUnmount(() => {
