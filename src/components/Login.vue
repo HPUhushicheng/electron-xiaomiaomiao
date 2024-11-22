@@ -31,7 +31,6 @@
 <script setup lang="ts">
 import { ref, onMounted  } from 'vue';
 import { useRouter } from 'vue-router';
-import { defineEmits } from 'vue';
 import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
 import { useUserStore } from '../stores/useUserStore';
 
@@ -39,10 +38,9 @@ const router = useRouter();
 const studentid = ref('');
 const password = ref('');
 const onlineDurationStore = useOnlineDurationStore();
-const emit = defineEmits(['login-success']);
+const userStore = useUserStore();
 const displayedDesc = ref('');
 const fullDesc = '电器开发部';
-const userStore = useUserStore();
 
 // 打字机效果函数
 const typeWriter = (text, delay) => {
@@ -297,7 +295,7 @@ button:active {
 input {
   outline: none; /* 确保没有样式影响输入框 */
   border: 1px solid #ccc; /* 默认边框式 */
-  padding: 8px; /* ���边距 */
+  padding: 8px; /* 内边距 */
   border-radius: 4px; /* 圆角 */
   margin-bottom: 10px; /* 底部外边距 */
 }
