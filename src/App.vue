@@ -1,15 +1,21 @@
-<script setup lang="ts">
-import Login from './components/Login.vue'
-import Register from './components/Register.vue'
-import TodayTime from './components/TodayTime.vue'
-import WeekTime from './components/WeekTime.vue'
-</script>
-
 <template>
-  <TodayTime />
-  <WeekTime />
+  <router-view />
 </template>
 
-<style scoped>
-/* 你可以在这里添加全局样式 */
-</style>
+<script setup lang="ts">
+import { onMounted, onBeforeUnmount } from 'vue';
+import { useOnlineDurationStore } from './stores/useOnlineDurationStore';
+
+const store = useOnlineDurationStore();
+
+const stopTimerOnExit = () => {
+  console.log('应用卸载，停止计时器');
+  store.stopTimer();
+};
+
+onBeforeUnmount(() => {
+  stopTimerOnExit();
+});
+
+window.addEventListener('beforeunload', stopTimerOnExit);
+</script>

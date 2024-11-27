@@ -1,15 +1,15 @@
-<template>
+ <template>
     <div class="fullscreen">
         <div class="container">
             <div class="first">
                 <div class="title">{{displayedDesc}}</div>
-                <div class="desc">关于<span @click="aboutWaiFChat">电器开发部</span></div>
+                <div class="desc">关于<span >电器开发部</span></div>
             </div>
             <div class="second">
-                <input placeholder="请输入你的手机号" pattern="\d+" class="tel" name="tel" type="tel">
-                <input placeholder="请输入你的密码" pattern="\d+" class="passwd" name="passwd" type="passwd">
+                <input v-model="studentid" placeholder="请输入你的学号" pattern="\d+" class="studentid" name="studentid" type="text">
+                <input v-model="password" placeholder="请输入你的密码" pattern="\d+" class="password" name="password" type="password">
 
-                <button>
+                <button @click="login">
                     <div class="svg-wrapper-1">
                         <div class="svg-wrapper">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -24,16 +24,26 @@
                 </button>
                 <p>还没有账号？<a href="#" @click.prevent="register">去注册</a></p>
             </div>
-
         </div>
     </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted  } from 'vue';
+import { useRouter } from 'vue-router';
+import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
+import { useUserStore } from '../stores/useUserStore';
 
-const displayedDesc = ref(''); // 用于显示的文本
-const fullDesc = '电器开发部'; // 完整的描述文本
+const store = useOnlineDurationStore();
+const router = useRouter();
+const id = ref('');
+const name = ref('');
+const studentid = ref('');
+const password = ref('');
+const onlineDurationStore = useOnlineDurationStore();
+const userStore = useUserStore();
+const displayedDesc = ref('');
+const fullDesc = '电器开发部';
 
 // 打字机效果函数
 const typeWriter = (text, delay) => {
@@ -42,7 +52,7 @@ const typeWriter = (text, delay) => {
 
     const type = () => {
         if (index < text.length) {
-            displayedDesc.value += text.charAt(index); // 添加下一个字符
+            displayedDesc.value += text.charAt(index); // 添加下一个字
             index++;
             setTimeout(type, delay); // 设置延迟
         } else {
@@ -56,6 +66,43 @@ const typeWriter = (text, delay) => {
 onMounted(() => {
     typeWriter(fullDesc, 400); // 调用打字机效果，设置每个字符的延迟
 });
+
+const login = async () => {
+  try {
+    const response = await fetch('http://localhost:666/list/all');
+
+    if (!response.ok) {
+      throw new Error('网络错误');
+    }
+
+    const users = await response.json();
+
+    const user = users.find(
+      (user: any) => user.studentid === studentid.value && user.password === password.value
+    );
+
+    if (user) {
+      console.log('登录成功, 用户:', user);
+
+      // 设置全局的 studentId
+      onlineDurationStore.setStudentId(user.studentid);
+
+      // 保存 studentId 到本地存储
+      localStorage.setItem('studentId', user.studentid);
+
+      onlineDurationStore.startTimer(); // 开始计时器
+      router.push('/zy'); // 跳转页面
+    } else {
+      alert('学号或密码错误');
+      studentid.value = '';
+      password.value = '';
+    }
+  } catch (error) {
+    console.error('登录失败,请联系管理员:', error);
+    studentid.value = '';
+    password.value = '';
+  }
+};
 </script>
 
 <style scoped>
@@ -201,7 +248,7 @@ button:active {
 
 
 /* From Uiverse.io by Creatlydev */
-.tel {
+.studentid {
     width: 220px;
     padding: 12px;
     border: none;
@@ -213,12 +260,12 @@ button:active {
     /* 增加底部外边距来调整距离 */
 }
 
-.tel:invalid {
+.studentid:invalid {
     animation: justshake 0.3s forwards;
     color: rgb(89, 102, 80);
 }
 
-.passwd {
+.password {
     width: 220px;
     padding: 12px;
     border: none;
@@ -229,7 +276,7 @@ button:active {
     margin-bottom: 30px;
 }
 
-.passwd:invalid {
+.password:invalid {
     animation: justshake 0.3s forwards;
     color: rgb(89, 102, 80);
 }
@@ -247,16 +294,20 @@ button:active {
         transform: rotate(5deg);
     }
 }
-</style> 
 
+input {
+  outline: none; /* 确保没有样式影响输入框 */
+  border: 1px solid #ccc; /* 默认边框式 */
+  padding: 8px; /* 内边距 */
+  border-radius: 4px; /* 圆角 */
+  margin-bottom: 10px; /* 底部外边距 */
+}
 
-
-
-
-
-
-
-
+input:focus {
+  border-color: #66afe9; /* 聚焦时的边框颜色 */
+  box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); /* 聚焦时的阴影效果 */
+}
+</style>  
 
 
 

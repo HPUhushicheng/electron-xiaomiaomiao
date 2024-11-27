@@ -1,43 +1,87 @@
 <template>
   <div>
     <el-card class="dashboard-card">
-      <h3>今日工作时长</h3>
+      <h3>今日在线时长</h3>
       <div ref="chartRef" style="height: 300px; width: 600px;"></div>
     </el-card>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue';
 import * as echarts from 'echarts';
+import { useOnlineDurationStore } from '../stores/useOnlineDurationStore';
+
+const store = useOnlineDurationStore();
+
+// 获取今天的日期
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const date = `${year}-${month}-${day}`;
 
 const chartRef = ref(null);
 
-onMounted(() => {
-  const chart = echarts.init(chartRef.value);
+const fetchOnlineDuration = async (id: string) => {
+  const url = `http://localhost:666/api/time/get?id=${id}&date=${date}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('获取在线时长失败:', error);
+    return [];
+  }
+};
 
+const renderChart = (data: Array<{ daytime: number; hourtime: number }>) => {
+  const daytime = data.map(item => item.daytime);
+  const hourtimeInMinutes = data.map(item => item.hourtime / 60); // 将秒转换为分钟
+
+  const chart = echarts.init(chartRef.value);
   const option = {
     tooltip: {
       trigger: 'axis',
     },
     xAxis: {
       type: 'category',
-      data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+      data: daytime.map(d => `${d}:00`), // 将时间段格式化为字符串
     },
     yAxis: {
       type: 'value',
+      name: '在线时长（分钟）',
     },
     series: [
       {
-        name: '工作时长',
+        name: '在线时长',
         type: 'line',
-        data: Array.from({ length: 2000 }, () => Math.floor(Math.random() * 60)), // 示例数据
+        data: hourtimeInMinutes,
       },
     ],
   };
 
   chart.setOption(option);
+};
+
+const updateChart = async () => {
+  const onlineDurationData = await fetchOnlineDuration(store.studentId);
+  renderChart(onlineDurationData);
+};
+
+onMounted(() => {
+  updateChart();
 });
+
+// 监听 store 中 studentId 的变化
+watch(
+  () => store.studentId,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      await updateChart();
+    }
+  }
+);
 </script>
 
 <style scoped>

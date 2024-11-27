@@ -1,30 +1,24 @@
+这里用的是https://electron-vite.github.io/guide/getting-started.html
+![Alt text](image.png)
+
+GitHub https://github.com/electron-vite/electron-vite-vue
+
+
 # Vue 3 + TypeScript + Vite
 
-pnpm create vite@latest electron-vue
-pnpm i
-pnpm run dev
-pnpm add electron -D    // 添加electron依赖,这一步经常出错，终归问题是网络问题
-pnpm add concurrently
+This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-pnpm add -D sass-embedded
-pnpm add element-plus
-pnpm add echarts
+## Recommended IDE Setup
 
+- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-解决electron安装失败问题
-● 报错信息
+## Type Support For `.vue` Imports in TS
 
-可以看出connect timeout ,显示超时
-● 在项目下新建.npmrc文件
-touch .npmrc
-● 添加如下内容
-# 将pnpm变成扁平化架构，pnpm专用
-node-linker=hoisted
-# 设置阿里仓库源
-registry="https://registry.npmmirror.com"
-# 在国内使用pnpm安装electron需要配置一下electron的下载路径
-ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
-● 安装
-pnpm add electron -D
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
-解决方案来自https://juejin.cn/post/7263483823773351993
+If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+
+1. Disable the built-in TypeScript Extension
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
