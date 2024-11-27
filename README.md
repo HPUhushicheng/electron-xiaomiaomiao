@@ -1,7 +1,9 @@
-这里用的是https://electron-vite.github.io/guide/getting-started.html
-![Alt text](image.png)
 
-GitHub https://github.com/electron-vite/electron-vite-vue
+部分效果如下，详细文档后续再写，内容太多
+ ![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+
 
 
 # Vue 3 + TypeScript + Vite
@@ -22,3 +24,8 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
    1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
    2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+
+这里用的是https://electron-vite.github.io/guide/getting-started.html
+![Alt text](image.png)
+
+GitHub https://github.com/electron-vite/electron-vite-vue
